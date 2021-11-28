@@ -63,8 +63,9 @@ func trieWords(root *Node, str string) []string {
 		var childLen int
 		for range node.Children {
 			childLen++
+			break
 		}
-		if childLen == 0 {
+		if childLen == 0 && len(str) > 0 {
 			words = append(words, str)
 		} else {
 			for r, child := range node.Children {
