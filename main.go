@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"prefix-tree/trie"
 	"sort"
 	"strings"
+
+	"github.com/malisetti/prefix-tree/trie"
 )
 
 func main() {
