@@ -1,44 +1,18 @@
-package main
+package trie
 
 import (
 	"fmt"
-	"sort"
-	"strings"
 )
 
 type Node struct {
 	Children map[rune]*Node
 }
 
-func main() {
-	root := &Node{}
-
-	for _, fruit := range fruits {
-		insertString(root, fruit)
-	}
-
-	words, err := findAutoCompletions(root, "Che")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		sort.Strings(words)
-		fmt.Println(strings.Join(words, ", "))
-	}
-
-	// words := trieWords(root)
-	// for _, w := range words {
-	// 	fmt.Println(w)
-	// }
-
-	// yes := checkString(root, "Blood orange")
-	// fmt.Printf("%v", yes)
-
-	// fmt.Printf("digraph trie {\n")
-	// dumpDot('_', 0, root)
-	// fmt.Printf("}\n")
+func NewTrie() *Node {
+	return &Node{}
 }
 
-func insertString(root *Node, str string) {
+func (root *Node) InsertString(str string) {
 	for _, v := range str {
 		if root.Children == nil {
 			root.Children = make(map[rune]*Node)
@@ -54,7 +28,7 @@ func insertString(root *Node, str string) {
 	}
 }
 
-func checkString(root *Node, str string) bool {
+func (root *Node) CheckString(str string) bool {
 	for _, v := range str {
 		if root.Children[v] == nil {
 			return false
@@ -63,15 +37,14 @@ func checkString(root *Node, str string) bool {
 		}
 	}
 
-	var childLen int
 	for range root.Children {
-		childLen++
+		return false
 	}
 
-	return childLen == 0
+	return true
 }
 
-func findAutoCompletions(root *Node, str string) ([]string, error) {
+func (root *Node) FindAutoCompletions(str string) ([]string, error) {
 	for _, v := range str {
 		root = root.Children[v]
 		if root == nil {
@@ -104,9 +77,9 @@ func trieWords(root *Node, str string) []string {
 	return words
 }
 
-func dumpDot(rootc rune, i int, root *Node) {
+func DumpDot(rootc rune, i int, root *Node) {
 	for c, child := range root.Children {
 		fmt.Printf("    \"%d %c\" -> \"%d %c\";\n", i, rootc, i+1, c)
-		dumpDot(c, i+1, child)
+		DumpDot(c, i+1, child)
 	}
 }
