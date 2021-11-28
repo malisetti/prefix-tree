@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 )
 
 type Node struct {
@@ -11,17 +13,25 @@ type Node struct {
 func main() {
 	root := &Node{}
 
-	// for _, fruit := range fruits {
-	// 	insertString(root, fruit)
+	for _, fruit := range fruits {
+		insertString(root, fruit)
+	}
+
+	words, err := findAutoCompletions(root, "Chex")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		sort.Strings(words)
+		fmt.Println(strings.Join(words, ", "), err)
+	}
+
+	// words := trieWords(root)
+	// for _, w := range words {
+	// 	fmt.Println(w)
 	// }
 
-	insertString(root, "hello")
-	insertString(root, "helium")
-
-	// words, err := findAutoCompletions(root, "hel")
-	// fmt.Println(words, err)
-
-	displayWords(root, "")
+	// yes := checkString(root, "Blood orange")
+	// fmt.Printf("%v", yes)
 
 	// fmt.Printf("digraph trie {\n")
 	// dumpDot('_', 0, root)
@@ -53,7 +63,12 @@ func checkString(root *Node, str string) bool {
 		}
 	}
 
-	return true
+	var childLen int
+	for range root.Children {
+		childLen++
+	}
+
+	return childLen == 0
 }
 
 func findAutoCompletions(root *Node, str string) ([]string, error) {
@@ -64,17 +79,44 @@ func findAutoCompletions(root *Node, str string) ([]string, error) {
 		}
 	}
 
-	return nil, nil
+	var words []string
+	var search func(node *Node, str string)
+	search = func(node *Node, str string) {
+		var childLen int
+		for range node.Children {
+			childLen++
+		}
+		if childLen == 0 {
+			words = append(words, str)
+		} else {
+			for r, child := range node.Children {
+				search(child, str+string(r))
+			}
+		}
+	}
+	search(root, str)
+
+	return words, nil
 }
 
-func displayWords(root *Node, str string) {
-	for r, child := range root.Children {
-		strx := str + string(r)
-
-		displayWords(child, strx)
+func trieWords(root *Node) []string {
+	var words []string
+	var search func(node *Node, str string)
+	search = func(node *Node, str string) {
+		var childLen int
+		for range node.Children {
+			childLen++
+		}
+		if childLen == 0 {
+			words = append(words, str)
+		} else {
+			for r, child := range node.Children {
+				search(child, str+string(r))
+			}
+		}
 	}
-
-	println(str)
+	search(root, "")
+	return words
 }
 
 func dumpDot(rootc rune, i int, root *Node) {
