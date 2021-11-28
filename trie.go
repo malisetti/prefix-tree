@@ -17,12 +17,12 @@ func main() {
 		insertString(root, fruit)
 	}
 
-	words, err := findAutoCompletions(root, "Chex")
+	words, err := findAutoCompletions(root, "Che")
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		sort.Strings(words)
-		fmt.Println(strings.Join(words, ", "), err)
+		fmt.Println(strings.Join(words, ", "))
 	}
 
 	// words := trieWords(root)
@@ -78,30 +78,14 @@ func findAutoCompletions(root *Node, str string) ([]string, error) {
 			return nil, fmt.Errorf("%s word not found", str)
 		}
 	}
-
-	var words []string
-	var search func(node *Node, str string)
-	search = func(node *Node, str string) {
-		var childLen int
-		for range node.Children {
-			childLen++
-		}
-		if childLen == 0 {
-			words = append(words, str)
-		} else {
-			for r, child := range node.Children {
-				search(child, str+string(r))
-			}
-		}
-	}
-	search(root, str)
-
+	words := trieWords(root, str)
 	return words, nil
 }
 
-func trieWords(root *Node) []string {
+func trieWords(root *Node, str string) []string {
 	var words []string
 	var search func(node *Node, str string)
+
 	search = func(node *Node, str string) {
 		var childLen int
 		for range node.Children {
@@ -115,7 +99,8 @@ func trieWords(root *Node) []string {
 			}
 		}
 	}
-	search(root, "")
+
+	search(root, str)
 	return words
 }
 
