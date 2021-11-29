@@ -31,8 +31,8 @@ func main() {
 		fmt.Println(strings.Join(words, ", "))
 	}
 
-	yes := root.Check("Blood orange")
-	fmt.Printf("%v\n", yes)
+	isWord, isSubStr := root.Check("Blood")
+	fmt.Printf("%v %v\n", isWord, isSubStr)
 
 	fmt.Printf("digraph trie {\n")
 	trie.DumpDot('_', 0, root)

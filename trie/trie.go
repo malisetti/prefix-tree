@@ -28,20 +28,20 @@ func (root *Node) Insert(str string) {
 	}
 }
 
-func (root *Node) Check(str string) bool {
+func (root *Node) Check(str string) (isWord, isSubStr bool) {
 	for _, v := range str {
 		if root.Children[v] == nil {
-			return false
+			return
 		} else {
 			root = root.Children[v]
 		}
 	}
 
 	for range root.Children {
-		return false
+		return false, true
 	}
 
-	return true
+	return true, false
 }
 
 func (root *Node) Completions(str string) ([]string, error) {
