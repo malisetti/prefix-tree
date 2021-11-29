@@ -23,16 +23,11 @@ func main() {
 		fmt.Println(strings.Join(words, ", "))
 	}
 
-	words, err = root.Completions("Bla")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		sort.Strings(words)
-		fmt.Println(strings.Join(words, ", "))
-	}
+	isWord, isSubStr := root.Check("Cherry")
+	fmt.Printf("%s is word %v, is substr %v\n", "Cherry", isWord, isSubStr)
 
-	isWord, isSubStr := root.Check("Blood")
-	fmt.Printf("%v %v\n", isWord, isSubStr)
+	isWord, isSubStr = root.Check("Blood")
+	fmt.Printf("%s is word %v, is substr %v\n", "Blood", isWord, isSubStr)
 
 	fmt.Printf("digraph trie {\n")
 	trie.DumpDot('_', 0, root)
