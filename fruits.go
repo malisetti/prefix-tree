@@ -1,6 +1,6 @@
 package main
 
-var fruits []string = []string{
+var fruits = [...]string{
 	"Apple",
 	"Apricot",
 	"Avocado",
