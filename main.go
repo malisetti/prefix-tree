@@ -12,10 +12,10 @@ func main() {
 	root := trie.NewTrie()
 
 	for _, fruit := range fruits {
-		root.InsertString(fruit)
+		root.Insert(fruit)
 	}
 
-	words, err := root.FindAutoCompletions("Che")
+	words, err := root.Completions("Che")
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -23,7 +23,15 @@ func main() {
 		fmt.Println(strings.Join(words, ", "))
 	}
 
-	yes := root.CheckString("Blood orange")
+	words, err = root.Completions("Bla")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		sort.Strings(words)
+		fmt.Println(strings.Join(words, ", "))
+	}
+
+	yes := root.Check("Blood orange")
 	fmt.Printf("%v\n", yes)
 
 	fmt.Printf("digraph trie {\n")

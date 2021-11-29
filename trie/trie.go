@@ -12,7 +12,7 @@ func NewTrie() *Node {
 	return &Node{}
 }
 
-func (root *Node) InsertString(str string) {
+func (root *Node) Insert(str string) {
 	for _, v := range str {
 		if root.Children == nil {
 			root.Children = make(map[rune]*Node)
@@ -28,7 +28,7 @@ func (root *Node) InsertString(str string) {
 	}
 }
 
-func (root *Node) CheckString(str string) bool {
+func (root *Node) Check(str string) bool {
 	for _, v := range str {
 		if root.Children[v] == nil {
 			return false
@@ -44,18 +44,18 @@ func (root *Node) CheckString(str string) bool {
 	return true
 }
 
-func (root *Node) FindAutoCompletions(str string) ([]string, error) {
+func (root *Node) Completions(str string) ([]string, error) {
 	for _, v := range str {
 		root = root.Children[v]
 		if root == nil {
 			return nil, fmt.Errorf("%s word not found", str)
 		}
 	}
-	words := trieWords(root, str)
+	words := Words(root, str)
 	return words, nil
 }
 
-func trieWords(root *Node, str string) []string {
+func Words(root *Node, str string) []string {
 	var words []string
 	var search func(node *Node, str string)
 
@@ -81,6 +81,6 @@ func trieWords(root *Node, str string) []string {
 func DumpDot(rootc rune, i int, root *Node) {
 	for c, child := range root.Children {
 		fmt.Printf("    \"%d %c\" -> \"%d %c\";\n", i, rootc, i+1, c)
-		DumpDot(c, i+1, child)
+		DumpDot(rune(c), i+1, child)
 	}
 }
