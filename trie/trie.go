@@ -66,19 +66,19 @@ func (trie *Trie) Completions(str string) ([]string, error) {
 
 func words(root *node, str string) []string {
 	var words []string
-	var search func(node *node, str string)
+	var search func(node *node, str []rune)
 
-	search = func(node *node, str string) {
+	search = func(node *node, str []rune) {
 		if len(root.children) == 0 && len(str) > 0 {
-			words = append(words, str)
+			words = append(words, string(str))
 		} else {
 			for r, child := range node.children {
-				search(child, str+string(r))
+				search(child, append(str, r))
 			}
 		}
 	}
 
-	search(root, str)
+	search(root, []rune(str))
 	return words
 }
 
@@ -86,7 +86,7 @@ func DumpDot(rootc rune, i int, trie *Trie) {
 	var dump func(rootc rune, i int, root *node)
 	dump = func(rootc rune, i int, root *node) {
 		for c, child := range root.children {
-			fmt.Printf("    \"%d %c\" -> \"%d %c\";\n", i, rootc, i+1, c)
+			fmt.Printf("    \"%c\" -> \"%c\";\n", rootc, c)
 			dump(rune(c), i+1, child)
 		}
 	}
