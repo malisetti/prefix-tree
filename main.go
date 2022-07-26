@@ -14,6 +14,6 @@ func main() {
 	}
 
 	fmt.Printf("digraph trie {\n")
-	prefixtree.DumpDot('_', 0, trie)
+	prefixtree.DumpDot('_', trie)
 	fmt.Printf("}\n")
 }
