@@ -82,13 +82,13 @@ func words(root *node, str string) []string {
 	return words
 }
 
-func DumpDot(rootc rune, i int, trie *Trie) {
-	var dump func(rootc rune, i int, root *node)
-	dump = func(rootc rune, i int, root *node) {
+func DumpDot(rootc rune, trie *Trie) {
+	var dump func(rootc rune, root *node)
+	dump = func(rootc rune, root *node) {
 		for c, child := range root.children {
 			fmt.Printf("    \"%c\" -> \"%c\";\n", rootc, c)
-			dump(rune(c), i+1, child)
+			dump(rune(c), child)
 		}
 	}
-	dump(rootc, i, trie.root)
+	dump(rootc, trie.root)
 }
