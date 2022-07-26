@@ -4,71 +4,75 @@ import (
 	"fmt"
 )
 
-type Node struct {
-	Children map[rune]*Node
+type Trie struct {
+	root *node
 }
 
-func NewTrie() *Node {
-	return &Node{}
+type node struct {
+	children map[rune]*node
 }
 
-func (root *Node) Insert(str string) {
+func NewTrie() *Trie {
+	return &Trie{
+		root: &node{},
+	}
+}
+
+func (trie *Trie) Insert(str string) {
+	root := trie.root
 	for _, v := range str {
-		if root.Children == nil {
-			root.Children = make(map[rune]*Node)
+		if root.children == nil {
+			root.children = make(map[rune]*node)
 		}
-		if root.Children[v] == nil {
+		if root.children[v] == nil {
 			// insert node and advance
-			root.Children[v] = &Node{
-				Children: make(map[rune]*Node),
+			root.children[v] = &node{
+				children: make(map[rune]*node),
 			}
 		}
 
-		root = root.Children[v]
+		root = root.children[v]
 	}
 }
 
-func (root *Node) Check(str string) (isWord, isSubStr bool) {
+func (trie *Trie) Check(str string) (isWord, isSubStr bool) {
+	root := trie.root
 	for _, v := range str {
-		if root.Children[v] == nil {
+		if root.children[v] == nil {
 			return
 		} else {
-			root = root.Children[v]
+			root = root.children[v]
 		}
 	}
 
-	for range root.Children {
+	for range root.children {
 		return false, true
 	}
 
 	return true, false
 }
 
-func (root *Node) Completions(str string) ([]string, error) {
+func (trie *Trie) Completions(str string) ([]string, error) {
+	root := trie.root
 	for _, v := range str {
-		root = root.Children[v]
+		root = root.children[v]
 		if root == nil {
 			return nil, fmt.Errorf("%s word not found", str)
 		}
 	}
-	words := Words(root, str)
+	words := words(root, str)
 	return words, nil
 }
 
-func Words(root *Node, str string) []string {
+func words(root *node, str string) []string {
 	var words []string
-	var search func(node *Node, str string)
+	var search func(node *node, str string)
 
-	search = func(node *Node, str string) {
-		var childLen int
-		for range node.Children {
-			childLen++
-			break
-		}
-		if childLen == 0 && len(str) > 0 {
+	search = func(node *node, str string) {
+		if len(root.children) == 0 && len(str) > 0 {
 			words = append(words, str)
 		} else {
-			for r, child := range node.Children {
+			for r, child := range node.children {
 				search(child, str+string(r))
 			}
 		}
@@ -78,9 +82,13 @@ func Words(root *Node, str string) []string {
 	return words
 }
 
-func DumpDot(rootc rune, i int, root *Node) {
-	for c, child := range root.Children {
-		fmt.Printf("    \"%d %c\" -> \"%d %c\";\n", i, rootc, i+1, c)
-		DumpDot(rune(c), i+1, child)
+func DumpDot(rootc rune, i int, trie *Trie) {
+	var dump func(rootc rune, i int, root *node)
+	dump = func(rootc rune, i int, root *node) {
+		for c, child := range root.children {
+			fmt.Printf("    \"%d %c\" -> \"%d %c\";\n", i, rootc, i+1, c)
+			dump(rune(c), i+1, child)
+		}
 	}
+	dump(rootc, i, trie.root)
 }
