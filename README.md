@@ -1,5 +1,5 @@
 # prefix-tree
 
-go build
-./prefix-tree > dump.dot
-dot -Tsvg dump.dot > dot.svg
+* go build
+* ./prefix-tree > dump.dot
+* dot -Tsvg dump.dot > dot.svg
